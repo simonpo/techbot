@@ -43,7 +43,7 @@ intents.matches('Search', [
             //If we have results send them to the showResults dialog (acts like a decoupled view)
             session.replaceDialog('/showResults', { result });
         } else {
-            session.endDialog("No musicians by the name \'" + name + "\' found");
+            session.endDialog("No articles about \'" + name + "\' were found.");
         }
     })
 
@@ -67,7 +67,7 @@ bot.dialog('/showResults', [
                 msg.addAttachment(
                     new builder.HeroCard(session)
                         .title(article.Title)
-                        .subtitle(article.Subtitle + " | " + "Search Score: " + article['@search.score'])
+                        .subtitle(article.SubTitle + " | " + "Search Score: " + article['@search.score'])
                         .text(article.Body[0])
                         // .images([builder.CardImage.create(session, article.imageURL)])
                 );

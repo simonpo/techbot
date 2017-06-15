@@ -47,7 +47,7 @@ intents.matches('Search', [
         }
     })
 
-    //console.log(queryString);
+    console.log(queryString);
     //if(results.entities[0]) {
     //    session.send(results.entities[0]["entity"])
     //    session.send(results.entities[0]["type"])

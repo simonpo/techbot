@@ -12,3 +12,6 @@ node_modules
 
 # yo
 .yo-rc.json
+
+# data files for documentdb
+data

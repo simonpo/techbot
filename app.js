@@ -1,12 +1,13 @@
 // A Microsoft Bot Framework template built by the Yeoman botscaffold generator
 // Get App Insights going
-const appInsights = require("applicationinsights");
-appInsights.setup();
-appInsights.start();
+//const appInsights = require("applicationinsights");
+//appInsights.setup();
+//appInsights.start();
 
 // and other requirements
 var restify = require('restify'); 
 var builder = require('botbuilder'); 
+const util = require('util');
 require('./searchHelpers.js')();
 
 // Setup Restify Server
@@ -34,7 +35,10 @@ intents.matches('Greeting', builder.DialogAction.send('Hello'));
 intents.matches('Search', [
     function(session, results) {
     var name = results.entities[0]["entity"];
-    console.log('Entity returned is: %s', name);
+    // console.log('Entity returned is: %s', name);
+    console.log('You are on the %s channel', session.message.address.channelId);
+    console.log(util.inspect(session.message));
+    console.log(util.inspect(results, false, null));
     var queryString = 'https://' + process.env.AZURE_SEARCH_NAME + '.search.windows.net/indexes/' + process.env.AZURE_INDEX_NAME + '/docs?api-key=' + process.env.AZURE_SEARCH_KEY + '&api-version=2015-02-28&' + 'search=' + name;
 
     performSearchQuery(queryString, function (err, result) {
@@ -86,11 +90,12 @@ bot.dialog('/showResults', [
                 msg.addAttachment(
                     new builder.HeroCard(session)
                         .title(article.Title)
-                        .subtitle(article.SubTitle + " | " + "Search Score: " + article['@search.score'])
+                        .subtitle(article.SubTitle)
                         // currently the db holds all body text as an array of lines, due to its JSON formatting. So, join the array and show it
                         // need to find the correct markup for a newline char in the channels
                         .text(article.Body.join('\n '))
                         // .images([builder.CardImage.create(session, article.imageURL)])
+                        .text(article.Body + "\n Relevance:" + article['@search.score'])
                 );
             })
         session.endDialog(msg);

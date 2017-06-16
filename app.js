@@ -34,6 +34,7 @@ intents.matches('Greeting', builder.DialogAction.send('Hello'));
 intents.matches('Search', [
     function(session, results) {
     var name = results.entities[0]["entity"];
+    console.log('Entity returned is: %s', name);
     var queryString = 'https://' + process.env.AZURE_SEARCH_NAME + '.search.windows.net/indexes/' + process.env.AZURE_INDEX_NAME + '/docs?api-key=' + process.env.AZURE_SEARCH_KEY + '&api-version=2015-02-28&' + 'search=' + name;
 
     performSearchQuery(queryString, function (err, result) {
@@ -60,6 +61,24 @@ intents.onDefault(builder.DialogAction.send("Sorry, but I didn't understand that
 
 // show results
 
+// bot.dialog('/showResults', [
+//     function (session, args) {
+//         var msg = new builder.Message(session).attachmentLayout(builder.AttachmentLayout.carousel);
+//             args.result['value'].forEach(function (article, i) {
+//                 msg.addAttachment(
+//                     new builder.HeroCard(session)
+//                         .title(article.Title)
+//                         .subtitle(article.SubTitle + " | " + "Search Score: " + article['@search.score'])
+//                         // currently the db holds all body text as an array of lines, due to its JSON formatting. So, join the array and show it
+//                         // need to find the correct markup for a newline char in the channels
+//                         .text(article.Body.join('\n '))
+//                         // .images([builder.CardImage.create(session, article.imageURL)])
+//                 );
+//             })
+//         session.endDialog(msg);
+//     }
+// ])
+
 bot.dialog('/showResults', [
     function (session, args) {
         var msg = new builder.Message(session).attachmentLayout(builder.AttachmentLayout.carousel);
@@ -77,7 +96,6 @@ bot.dialog('/showResults', [
         session.endDialog(msg);
     }
 ])
-
 
 // web interface
 server.get('/', restify.serveStatic({

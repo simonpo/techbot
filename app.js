@@ -87,6 +87,7 @@ bot.dialog('/showResults', [
     function (session, args) {
         var msg = new builder.Message(session).attachmentLayout(builder.AttachmentLayout.carousel);
             args.result['value'].forEach(function (article, i) {
+                msg.addEntity( { "mrkdwn": true } );
                 msg.addAttachment(
                     new builder.HeroCard(session)
                         .title(article.Title)
@@ -99,6 +100,7 @@ bot.dialog('/showResults', [
                 );
             })
         session.endDialog(msg);
+        console.log('Message is %s: ', util.inspect(msg));
     }
 ])
 

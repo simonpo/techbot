@@ -94,7 +94,7 @@ bot.dialog('/showResults', [
                         .subtitle(article.SubTitle)
                         // currently the db holds all body text as an array of lines, due to its JSON formatting. So, join the array and show it
                         // need to find the correct markup for a newline char in the channels
-                        .text(article.Body.join('\n '))
+                        .text(article.Body.join('\n\n '))
                         // .images([builder.CardImage.create(session, article.imageURL)])
                         .text(article.Body + "\n Relevance:" + article['@search.score'])
                 );

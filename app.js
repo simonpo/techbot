@@ -34,9 +34,15 @@ bot.dialog('/', intents);
 intents.matches('Greeting', builder.DialogAction.send('Hello'));
 intents.matches('Search', [
     function(session, results) {
-    var name = results.entities[0]["entity"];
+    if (results.entities[0] === undefined) {
+        console.log("The entity was blank :(");
+        var name = "that search string";
+    }
+    else {
+        var name = results.entities[0]["entity"];
+    }
+
     // console.log('Entity returned is: %s', name);
-    session.sendTyping();
     console.log('You are on the %s channel', session.message.address.channelId);
     //console.log(util.inspect(session.message));
     //console.log(util.inspect(results, false, null));
@@ -49,7 +55,7 @@ intents.matches('Search', [
             //If we have results send them to the showResults dialog (acts like a decoupled view)
             session.replaceDialog('/showResults', { result });
         } else {
-            session.endDialog("No articles about \'" + name + "\' were found.");
+            session.endDialog("No articles about " + name + " were found.");
         }
     })
 
@@ -84,16 +90,15 @@ intents.onDefault(builder.DialogAction.send("Sorry, but I didn't understand that
 //     }
 // ])
 
-bot.dialog('/showResults', [
+/*bot.dialog('/showResults', [
     function (session, args) {
         var msg = new builder.Message(session).attachmentLayout(builder.AttachmentLayout.carousel);
             args.result['value'].forEach(function (article, i) {
-                msg.addEntity( { "mrkdwn": true } );
                 msg.addAttachment(
                     new builder.HeroCard(session)
                         .title(article.Title)
                         .subtitle(article.SubTitle)
-                        // currently the db holds all body text as an array of lines, due to its JSON formatting. So, join the array and show it
+                        // db holds all body text as an array of lines, due to its JSON formatting. So, join the array and show it
                         // need to find the correct markup for a newline char in the channels
                         .text(article.Body.join('\n\n '))
                         // .images([builder.CardImage.create(session, article.imageURL)])
@@ -102,6 +107,16 @@ bot.dialog('/showResults', [
             })
         session.endDialog(msg);
         console.log('Message is %s: ', util.inspect(msg));
+    }
+])*/
+
+bot.dialog('/showResults', [
+    function (session, args) {
+        args.result['value'].forEach(function (article, i) {
+            var msg = ("Title: " + (article.Title) + "\nBody: " + (article.Body.join('\n') + "\n\n Relevance: " + (article['@search.score'])));
+            session.endDialog(msg);
+            //session.send("Title: " + (article.Title) + "\nBody: " + (article.Body.join('\n') + "\n\n Relevance: " + (article['@search.score'])));
+        })
     }
 ])
 

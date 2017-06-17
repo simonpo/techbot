@@ -1,8 +1,8 @@
 // A Microsoft Bot Framework template built by the Yeoman botscaffold generator
 // Get App Insights going
-//const appInsights = require("applicationinsights");
-//appInsights.setup();
-//appInsights.start();
+const appInsights = require("applicationinsights");
+appInsights.setup();
+appInsights.start();
 
 // and other requirements
 var restify = require('restify'); 
@@ -10,11 +10,15 @@ var builder = require('botbuilder');
 const util = require('util');
 require('./searchHelpers.js')();
 
-// Setup Restify Server
+// Setup Restify server and log startup time to Insights
+let start = Date.now();
 var server = restify.createServer();
 server.listen(process.env.PORT || 3978, function() 
 {
    console.log('%s listening to %s', server.name, server.url); 
+   let duration = Date.now() - start;
+   appInsights.client.trackMetric("server startup time", duration);
+   console.log('Startup time: %s', duration, 'ms');
 });
 
 // Create the bot
@@ -43,9 +47,9 @@ intents.matches('Search', [
     }
 
     // console.log('Entity returned is: %s', name);
-    console.log('You are on the %s channel', session.message.address.channelId);
-    //console.log(util.inspect(session.message));
-    //console.log(util.inspect(results, false, null));
+    appInsights.client.trackMetric("Channel", session.message.address.channelId);
+    appInsights.client.trackMetric("SearchEntity", name);
+    // console.log('You are on the %s channel', session.message.address.channelId);
     var queryString = 'https://' + process.env.AZURE_SEARCH_NAME + '.search.windows.net/indexes/' + process.env.AZURE_INDEX_NAME + '/docs?api-key=' + process.env.AZURE_SEARCH_KEY + '&api-version=2015-02-28&' + 'search=' + name;
 
     performSearchQuery(queryString, function (err, result) {

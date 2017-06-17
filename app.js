@@ -110,7 +110,7 @@ bot.dialog('/showResults', [
     function (session, args) {
         args.result['value'].forEach(function (article, i) {
             var msg = ("*" + (article.Title) + "*\n\n" + (article.Body.join('\n\n') + "Relevance: " + (article['@search.score'])));
-            session.endDialog(msg);
+            session.send(msg);
             //session.send("Title: " + (article.Title) + "\nBody: " + (article.Body.join('\n') + "\n\n Relevance: " + (article['@search.score'])));
         })
     }

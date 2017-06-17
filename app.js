@@ -36,9 +36,10 @@ intents.matches('Search', [
     function(session, results) {
     var name = results.entities[0]["entity"];
     // console.log('Entity returned is: %s', name);
+    session.sendTyping();
     console.log('You are on the %s channel', session.message.address.channelId);
-    console.log(util.inspect(session.message));
-    console.log(util.inspect(results, false, null));
+    //console.log(util.inspect(session.message));
+    //console.log(util.inspect(results, false, null));
     var queryString = 'https://' + process.env.AZURE_SEARCH_NAME + '.search.windows.net/indexes/' + process.env.AZURE_INDEX_NAME + '/docs?api-key=' + process.env.AZURE_SEARCH_KEY + '&api-version=2015-02-28&' + 'search=' + name;
 
     performSearchQuery(queryString, function (err, result) {

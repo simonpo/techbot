@@ -116,7 +116,7 @@ bot.dialog('/showResults', [
         args.result['value'].forEach(function (article, i) {
             var msg = ("*" + (article.Title) + "*\n\n" + (article.Body.join('\n\n') + "\n\n\n\nRelevance: " + (article['@search.score'])));
             session.endDialog(msg);
-            //session.send("Title: " + (article.Title) + "\nBody: " + (article.Body.join('\n') + "\n\n Relevance: " + (article['@search.score'])));
+            console.log('Replied with: %s', article.Title);
         })
     }
 ])

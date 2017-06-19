@@ -1,11 +1,8 @@
 // A Microsoft Bot Framework template built by the Yeoman botscaffold generator
 // Get App Insights going
-var telemetryModule = require('./telemetry-module.js');
-
-var appInsights = require('applicationinsights');
-appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATION_KEY).start();
-var appInsightsClient = appInsights.getClient();
-
+var appInsights = require("applicationinsights");
+appInsights.setup();
+appInsights.start();
 
 // and other requirements
 var restify = require('restify'); 
@@ -20,7 +17,7 @@ server.listen(process.env.PORT || 3978, function()
 {
    console.log('%s listening to %s', server.name, server.url); 
    let duration = Date.now() - start;
-   appInsightsClient.trackMetric("Server Startup Time", duration);
+   appInsights.client.trackMetric("server startup time", duration);
    console.log('Startup time: %s', duration, 'ms');
 });
 
@@ -40,11 +37,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 bot.dialog('/', intents);
 intents.matches('Greeting', builder.DialogAction.send('Hello'));
 intents.matches('Search', [
-
     function(session, results) {
-
-    var telemetry = telemetryModule.createTelemetry(session, { setDefault: false });
-
     if (results.entities[0] === undefined) {
         console.log("The entity was blank :(");
         var name = "that search string";
@@ -54,10 +47,9 @@ intents.matches('Search', [
     }
 
     // console.log('Entity returned is: %s', name);
-    appInsightsClient.trackTrace('start', telemetry);
-    // appInsights.client.trackEvent("Channel Event", session.message.address.channelId);
+    appInsights.client.trackEvent("Channel Event", session.message.address.channelId);
      console.log('Logging channel: %s', session.message.address.channelId);
-    // appInsights.client.trackEvent("SearchEntity", name);
+    appInsights.client.trackEvent("SearchEntity", name);
     // console.log('You are on the %s channel', session.message.address.channelId);
     var queryString = 'https://' + process.env.AZURE_SEARCH_NAME + '.search.windows.net/indexes/' + process.env.AZURE_INDEX_NAME + '/docs?api-key=' + process.env.AZURE_SEARCH_KEY + '&api-version=2015-02-28&' + 'search=' + name;
 

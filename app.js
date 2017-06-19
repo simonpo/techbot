@@ -47,9 +47,9 @@ intents.matches('Search', [
     }
 
     // console.log('Entity returned is: %s', name);
-    appInsights.client.trackMetric("Channel", session.message.address.channelId);
+    appInsights.client.trackEvent("Channel", session.message.address.channelId);
     console.log('Logging channel: %s', session.message.address.channelId);
-    appInsights.client.trackMetric("SearchEntity", name);
+    appInsights.client.trackEvent("SearchEntity", name);
     // console.log('You are on the %s channel', session.message.address.channelId);
     var queryString = 'https://' + process.env.AZURE_SEARCH_NAME + '.search.windows.net/indexes/' + process.env.AZURE_INDEX_NAME + '/docs?api-key=' + process.env.AZURE_SEARCH_KEY + '&api-version=2015-02-28&' + 'search=' + name;
 
